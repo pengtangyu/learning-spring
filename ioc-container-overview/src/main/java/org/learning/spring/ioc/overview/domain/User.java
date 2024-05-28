@@ -1,15 +1,18 @@
 package org.learning.spring.ioc.overview.domain;
 
 import org.learning.spring.ioc.overview.enums.City;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.core.io.Resource;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * 用户类
  */
-public class User {
+public class User implements BeanNameAware {
     private Long id;
     private String name;
     // 枚举类型注入
@@ -19,6 +22,11 @@ public class User {
     private List lifeCities;
     // spring类型
     private Resource configFileLocation;
+
+    /**
+     * 当前bean名称
+     */
+    private transient String beanName;
 
     public Long getId() {
         return id;
@@ -85,5 +93,20 @@ public class User {
         user.setId(1L);
         user.setName("PTY");
         return user;
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("User Bean [" + beanName + "]初始化...");
+    }
+
+    @PreDestroy
+    public void destroy() {
+        System.out.println("User Bean [" + beanName + "]销毁...");
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        this.beanName = name;
     }
 }
